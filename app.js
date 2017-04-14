@@ -19,11 +19,24 @@ var connector = new builder.ChatConnector({
 var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
 
+// Setup intents
+var intents = new builder.IntentDialog();
+bot.dialog('/', intents);
+
 //=========================================================
 // Bots Dialogs
 //=========================================================
 
-bot.dialog('/', [
+intents.matches(/^change name/i, [
+    function (session) {
+        session.beginDialog('/profile');
+    },
+    function (session, results) {
+        session.send('Ok... Changed your name to %s', session.userData.name);
+    }
+]);
+
+intents.onDefault([
     function (session, args, next) {
         if (!session.userData.name) {
             session.beginDialog('/profile');
