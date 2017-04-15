@@ -53,11 +53,11 @@ intents.matches('GetJob',[
     },
     function (session, results) {
 
-        // if (session.userData.answer == 'yes') {
-            session.send('I focus on advanced analytics - so topics like machine learning and deep learning. Sounds fancy, right?', results.response);
-        // } else {
-            // session.send('Okay, not here to make friends anyway.');
-        // }
+        if (results.response == 'yes') {
+            session.send('I focus on advanced analytics - so topics like machine learning and deep learning. Sounds fancy, right?');
+        } else {
+            session.send('Okay, not here to make friends anyway.');
+        }
     }
 ]);
 bot.dialog('/more', [
