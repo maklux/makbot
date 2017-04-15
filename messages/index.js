@@ -34,23 +34,23 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
 */
 
 // Add intent handlers
-intents.matches('Intro', [
-    function(session) {
-        session.beginDialog('/getname');
-    },
-    function(session, results) {
-        session.send('Hi %s, as you know, I am here to represent Martin as he is very lazy and anti-social.', session.userData.name);
-    }
-]);
+// intents.matches('Intro', [
+//     function(session) {
+//         session.beginDialog('/getname');
+//     },
+//     function(session, results) {
+//         session.send('Hi %s, as you know, I am here to represent Martin as he is very lazy and anti-social.', session.userData.name);
+//     }
+// ]);
 
-intents.matches('ChangeName', [
-    function (session) {
-        session.beginDialog('/getname');
-    },
-    function (session, results) {
-        session.send('Ok... Changed your name to %s', session.userData.name);
-    }
-]);
+// intents.matches('ChangeName', [
+//     function (session) {
+//         session.beginDialog('/getname');
+//     },
+//     function (session, results) {
+//         session.send('Ok... Changed your name to %s', session.userData.name);
+//     }
+// ]);
 
 intents.matches('GetJob',[
     function (session) {
@@ -67,7 +67,8 @@ bot.dialog('/getname', [
         builder.Prompts.text(session, 'Hi... I am here to represent Martin as he is very lazy and anti-social. What is your name?');
     },
     function (session, results) {
-        session.send('Hello %s!', session.userData.name);
+        session.send('Hello you!');
+        // session.send('Hello %s!', session.userData.name);
     }
 ]);
 
