@@ -26,7 +26,10 @@ const LuisModelUrl = 'https://' + luisAPIHostName + '/luis/v1/application?id=' +
 
 // Main dialog with LUIS
 var recognizer = new builder.LuisRecognizer(LuisModelUrl);
-var intents = new builder.IntentDialog({ recognizers: [recognizer] })
+var intents = new builder.IntentDialog({ recognizers: [recognizer] });
+
+// Start Dialogue
+bot.dialog('/', intents);   
 
 // Add intent handlers
 intents.matches('Intro', [
@@ -39,34 +42,42 @@ intents.matches('Intro', [
 intents.matches('GetJob',[
     function (session, args, next) {
         session.send('I currently work at Microsoft as data insights consultant.');
-        if (!session.message.response) {
-            session.beginDialog('/response');
-        } else {
-            next();
-        }
+        // if (!session.userData.answer) {
+            session.beginDialog('/more');
+        // } else {
+        //     next();
+        // }
         
         // builder.Prompts.text(session, 'I currently work at Microsoft as data insights consultant. Want to know more?', answer);
         // session.send();
     },
     function (session, results) {
-        if (results.message.response == 'yes') {
-            session.send('I focus on advanced analytics - so topics like machine learning and deep learning. Sounds fancy, right?');
-        } else {
-            session.send('Okay, not here to make friends anyway.');
-        }
+
+        // if (session.userData.answer == 'yes') {
+            session.send('I focus on advanced analytics - so topics like machine learning and deep learning. Sounds fancy, right?', results.response);
+        // } else {
+            // session.send('Okay, not here to make friends anyway.');
+        // }
     }
 ]);
-bot.dialog('/response', [
+bot.dialog('/more', [
     function (session) {
         builder.Prompts.text(session, 'Want to know more?');
-    },
-    function (session, results) {
-        session.message.response = results.response;
-        session.endDialog();
-    }
+    }//,
+    // function (session, results) {
+        // session.userData.answer = results.response;
+        // session.endDialog();
+    // }
 ])
 
-intents.matches('GetLocation', builder.DialogAction.send('I am in Munich, Germany. We have lots of beer and schnitzel.'));
+intents.matches('GetLocation' [
+    function (session) {
+          session.send('I am based in Munich, Germany but my work takes me around Europe, and sometimes even beyond.');
+    }
+]);
+    
+    
+    // , builder.DialogAction.send('I am in Munich, Germany. We have lots of beer and schnitzel.'));
 intents.matches('GetName', builder.DialogAction.send('I am surprised you found this website without knowing my name, but here you go : Martin Antoine Kayser.'));
 intents.matches('GetOrigin', builder.DialogAction.send('I am from Luxembourg, Luxembourg.'));
 
@@ -79,10 +90,7 @@ intents.matches('Exit', [
 intents.onDefault((session) => {
     session.sendTyping()
     session.send('I\'m sorry - I am only allowed to talk about myself. \'%s\'.', session.message.text);
-});
-
-
-bot.dialog('/', intents);    
+}); 
 
 if (useEmulator) {
     var restify = require('restify');
