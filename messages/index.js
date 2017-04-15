@@ -17,8 +17,8 @@ var bot = new builder.UniversalBot(connector);
 var luisAppId = process.env.LuisAppId;
 var luisAPIKey = process.env.LuisAPIKey;
 var luisAPIHostName = process.env.LuisAPIHostName || 'westus.api.cognitive.microsoft.com';
-// https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/ce5c4d91-784e-457a-a09b-f27c9fa88d8e?subscription-key=b46b563f753f4af3a63e3441ccfb0417&timezoneOffset=0.0&verbose=true&q=
-const LuisModelUrl = 'https://' + luisAPIHostName + '/luis/v2.0/apps/' + luisAppId + '?subscription-key=' + luisAPIKey;
+const LuisModelUrl = 'https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/ce5c4d91-784e-457a-a09b-f27c9fa88d8e?subscription-key=b46b563f753f4af3a63e3441ccfb0417&timezoneOffset=0.0&verbose=true&q=';
+// const LuisModelUrl = 'https://' + luisAPIHostName + '/luis/v2.0/apps/' + luisAppId + '?subscription-key=' + luisAPIKey + '&timezoneOffset=0.0&verbose=true&q=';
 
 // Main dialog with LUIS
 var recognizer = new builder.LuisRecognizer(LuisModelUrl);
