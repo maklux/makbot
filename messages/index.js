@@ -62,17 +62,6 @@ intents.matches('GetJob',[
 ]);
 intents.matches('GetLocation', builder.DialogAction.send('I am in Munich, Germany. We have lots of beer and schnitzel.'));
 
-
-// intents.onDefault(builder.DialogAction.send("I'm sorry - I am only allowed to talk about Martin."));
-intents.onDefault((session) => {
-    session.send('I`\'m sorry - I am only allowed to talk about Martin. \'%s\'.', session.message.text);
-});
-// intents.onDefault((session) => {
-//     session.send('Sorry, I did not understand \'%s\'.', session.message.text);
-// });
-
-bot.dialog('/', intents);    
-
 bot.dialog('/getname', [
     function (session) {
         builder.Prompts.text(session, 'Hi... I am here to represent Martin as he is very lazy and anti-social. What is your name?');
@@ -81,6 +70,15 @@ bot.dialog('/getname', [
         session.send('Hello %s!', session.userData.name);
     }
 ]);
+
+intents.onDefault((session) => {
+    session.send('I\'m sorry - I am only allowed to talk about Martin. \'%s\'.', session.message.text);
+});
+// intents.onDefault((session) => {
+//     session.send('Sorry, I did not understand \'%s\'.', session.message.text);
+// });
+
+bot.dialog('/', intents);    
 
 if (useEmulator) {
     var restify = require('restify');
