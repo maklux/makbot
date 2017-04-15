@@ -10,8 +10,8 @@
             "cwd": "${workspaceRoot}",
             "env": {
                 "NODE_ENV": "development",
-                "LuisAppId": "",
-                "LuisAPIKey": ""
+                "LuisAppId": "69b5b0cf-a1b4-47e4-b7f6-502ef5b348e3",
+                "LuisAPIKey": "E2TBj61oE2QqptPsdkb7ySO"
             }
         }
     ]
