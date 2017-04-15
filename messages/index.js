@@ -31,23 +31,40 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
 // Add intent handlers
 intents.matches('Intro', [
     function(session) {
+        session.sendTyping()
         session.send('Hi, what do you want to know about me?');
     }
 ]);
 
 intents.matches('GetJob',[
     function (session, args, next) {
-        builder.Prompts.text(session, 'I currently work at Microsoft as data insights consultant. Want to know more?', answer);
+        session.send('I currently work at Microsoft as data insights consultant.');
+        if (!session.message.response) {
+            session.beginDialog('/response');
+        } else {
+            next();
+        }
+        
+        // builder.Prompts.text(session, 'I currently work at Microsoft as data insights consultant. Want to know more?', answer);
         // session.send();
     },
     function (session, results) {
-        if (results.response == 'yes') {
+        if (results.message.response == 'yes') {
             session.send('I focus on advanced analytics - so topics like machine learning and deep learning. Sounds fancy, right?');
         } else {
             session.send('Okay, not here to make friends anyway.');
         }
     }
 ]);
+bot.dialog('/response', [
+    function (session) {
+        builder.Prompts.text(session, 'Want to know more?');
+    },
+    function (session, results) {
+        session.message.response = results.response;
+        session.endDialog();
+    }
+])
 
 intents.matches('GetLocation', builder.DialogAction.send('I am in Munich, Germany. We have lots of beer and schnitzel.'));
 intents.matches('GetName', builder.DialogAction.send('I am surprised you found this website without knowing my name, but here you go : Martin Antoine Kayser.'));
@@ -55,10 +72,12 @@ intents.matches('GetOrigin', builder.DialogAction.send('I am from Luxembourg, Lu
 
 intents.matches('Exit', [
     function(session) {
+        session.sendTyping()
         session.send('Okay, bye I guess.');
     }
 ]);
 intents.onDefault((session) => {
+    session.sendTyping()
     session.send('I\'m sorry - I am only allowed to talk about myself. \'%s\'.', session.message.text);
 });
 
