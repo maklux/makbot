@@ -1,7 +1,5 @@
 /*-----------------------------------------------------------------------------
-This template demonstrates how to use an IntentDialog with a LuisRecognizer to add 
-natural language support to a bot. 
-For a complete walkthrough of creating this type of bot see the article at
+This is a simple implementation of LUIS within the Microsoft Bot Framework. 
 http://docs.botframework.com/builder/node/guides/understanding-natural-language/
 -----------------------------------------------------------------------------*/
 "use strict";
@@ -29,9 +27,6 @@ const LuisModelUrl = 'https://' + luisAPIHostName + '/luis/v1/application?id=' +
 // Main dialog with LUIS
 var recognizer = new builder.LuisRecognizer(LuisModelUrl);
 var intents = new builder.IntentDialog({ recognizers: [recognizer] })
-/*
-.matches('<yourIntent>')... See details at http://docs.botframework.com/builder/node/guides/understanding-natural-language/
-*/
 
 // Add intent handlers
 intents.matches('Intro', [
@@ -40,14 +35,17 @@ intents.matches('Intro', [
     }
 ]);
 
-
-
 intents.matches('GetJob',[
-    function (session) {
-        session.send('I currently work at Microsoft as data insights consultant. Want to know more?');
+    function (session, args, next) {
+        builder.Prompts.text(session, 'I currently work at Microsoft as data insights consultant. Want to know more?', answer);
+        // session.send();
     },
     function (session, results) {
-        session.send('I focus on advanced analytics - so topics like machine learning and deep learning. Sounds fancy, right?');
+        if (results.response == 'yes') {
+            session.send('I focus on advanced analytics - so topics like machine learning and deep learning. Sounds fancy, right?');
+        } else {
+            session.send('Okay, not here to make friends anyway.');
+        }
     }
 ]);
 
@@ -60,35 +58,10 @@ intents.matches('Exit', [
         session.send('Okay, bye I guess.');
     }
 ]);
-
-
-// intents.matches('ChangeName', [
-//     function (session) {
-//         session.beginDialog('/getname');
-//     },
-//     function (session, results) {
-//         session.send('Ok... Changed your name to %s', session.userData.name);
-//     }
-// ]);
-
-
-
-// bot.dialog('/getname', [
-//     function (session) {
-//         builder.Prompts.text(session, 'Hi... I am here to represent Martin as he is very lazy and anti-social. What is your name?');
-//     },
-//     function (session, results) {
-//         session.send('Hello you!');
-//         // session.send('Hello %s!', session.userData.name);
-//     }
-// ]);
-
 intents.onDefault((session) => {
     session.send('I\'m sorry - I am only allowed to talk about myself. \'%s\'.', session.message.text);
 });
-// intents.onDefault((session) => {
-//     session.send('Sorry, I did not understand \'%s\'.', session.message.text);
-// });
+
 
 bot.dialog('/', intents);    
 
