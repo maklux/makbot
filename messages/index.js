@@ -32,11 +32,55 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
 /*
 .matches('<yourIntent>')... See details at http://docs.botframework.com/builder/node/guides/understanding-natural-language/
 */
-.onDefault((session) => {
-    session.send('Sorry, I did not understand \'%s\'.', session.message.text);
+
+// Add intent handlers
+intents.matches('Intro', [
+    function(session) {
+        session.beginDialog('/getname');
+    },
+    function(session, results) {
+        session.send('Hi %s, as you know, I am here to represent Martin as he is very lazy and anti-social.', session.userData.name);
+    }
+]);
+
+intents.matches('ChangeName', [
+    function (session) {
+        session.beginDialog('/getname');
+    },
+    function (session, results) {
+        session.send('Ok... Changed your name to %s', session.userData.name);
+    }
+]);
+
+intents.matches('GetJob',[
+    function (session) {
+        session.send('I currently work at Microsoft as data insights consultant. Want to know more?');
+    },
+    function (session, results) {
+        session.send('I focus on advanced analytics - so topics like machine learning and deep learning. Sounds fancy, right?');
+    }
+]);
+intents.matches('GetLocation', builder.DialogAction.send('I am in Munich, Germany. We have lots of beer and schnitzel.'));
+
+
+// intents.onDefault(builder.DialogAction.send("I'm sorry - I am only allowed to talk about Martin."));
+intents.onDefault((session) => {
+    session.send('I`\'m sorry - I am only allowed to talk about Martin. \'%s\'.', session.message.text);
 });
+// intents.onDefault((session) => {
+//     session.send('Sorry, I did not understand \'%s\'.', session.message.text);
+// });
 
 bot.dialog('/', intents);    
+
+bot.dialog('/getname', [
+    function (session) {
+        builder.Prompts.text(session, 'Hi... I am here to represent Martin as he is very lazy and anti-social. What is your name?');
+    },
+    function (session, results) {
+        session.send('Hello %s!', session.userData.name);
+    }
+]);
 
 if (useEmulator) {
     var restify = require('restify');
