@@ -34,6 +34,14 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
 */
 
 // Add intent handlers
+intents.matches('Intro', [
+    function(session) {
+        session.send('Hi, what do you want to know about me?');
+    }
+]);
+
+
+
 intents.matches('GetJob',[
     function (session) {
         session.send('I currently work at Microsoft as data insights consultant. Want to know more?');
@@ -47,11 +55,12 @@ intents.matches('GetLocation', builder.DialogAction.send('I am in Munich, German
 intents.matches('GetName', builder.DialogAction.send('I am surprised you found this website without knowing my name, but here you go : Martin Antoine Kayser.'));
 intents.matches('GetOrigin', builder.DialogAction.send('I am from Luxembourg, Luxembourg.'));
 
-intents.matches('Intro', [
+intents.matches('Exit', [
     function(session) {
-        session.send('Hi, what do you want to know about me?');
+        session.send('Okay, bye I guess.');
     }
 ]);
+
 
 // intents.matches('ChangeName', [
 //     function (session) {
