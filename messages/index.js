@@ -47,14 +47,11 @@ intents.matches('GetLocation', builder.DialogAction.send('I am in Munich, German
 intents.matches('GetName', builder.DialogAction.send('I am surprised you found this website without knowing my name, but here you go : Martin Antoine Kayser.'));
 intents.matches('GetOrigin', builder.DialogAction.send('I am from Luxembourg, Luxembourg.'));
 
-// intents.matches('Intro', [
-//     function(session) {
-//         session.beginDialog('/getname');
-//     },
-//     function(session, results) {
-//         session.send('Hi %s, as you know, I am here to represent Martin as he is very lazy and anti-social.', session.userData.name);
-//     }
-// ]);
+intents.matches('Intro', [
+    function(session) {
+        session.send('Hi, what do you want to know about me?');
+    }
+]);
 
 // intents.matches('ChangeName', [
 //     function (session) {
@@ -78,7 +75,7 @@ intents.matches('GetOrigin', builder.DialogAction.send('I am from Luxembourg, Lu
 // ]);
 
 intents.onDefault((session) => {
-    session.send('I\'m sorry - I am only allowed to talk about Martin. \'%s\'.', session.message.text);
+    session.send('I\'m sorry - I am only allowed to talk about myself. \'%s\'.', session.message.text);
 });
 // intents.onDefault((session) => {
 //     session.send('Sorry, I did not understand \'%s\'.', session.message.text);
