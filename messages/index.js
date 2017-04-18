@@ -6,8 +6,10 @@ http://docs.botframework.com/builder/node/guides/understanding-natural-language/
 var builder = require("botbuilder");
 var botbuilder_azure = require("botbuilder-azure");
 
+// Declare emulator for testing
 var useEmulator = (process.env.NODE_ENV == 'development');
 
+// Microsoft App Connector Setup
 var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
     appId: process.env['MicrosoftAppId'],
     appPassword: process.env['MicrosoftAppPassword'],
@@ -15,13 +17,13 @@ var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure
     openIdMetadata: process.env['BotOpenIdMetadata']
 });
 
+// Initiate Bot
 var bot = new builder.UniversalBot(connector);
 
-// Make sure you add code to validate these fields
+// LUIS API Connection Setup
 var luisAppId = process.env.LuisAppId;
 var luisAPIKey = process.env.LuisAPIKey;
 var luisAPIHostName = process.env.LuisAPIHostName || 'westus.api.cognitive.microsoft.com';
-
 const LuisModelUrl = 'https://' + luisAPIHostName + '/luis/v1/application?id=' + luisAppId + '&subscription-key=' + luisAPIKey;
 
 // Main dialog with LUIS
@@ -31,28 +33,20 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] });
 // Start Dialogue
 bot.dialog('/', intents);   
 
-// Add intent handlers
+// ***Add intent handlers
+// Introduction
 intents.matches('Intro', [
     function(session) {
-        session.sendTyping()
-        session.send('Hi, what do you want to know about me?');
+        session.send('Hi stranger! What do you want to know about me?');
     }
 ]);
-
+// Response to GetJob
 intents.matches('GetJob',[
     function (session, args, next) {
         session.send('I currently work at Microsoft as data insights consultant.');
-        // if (!session.userData.answer) {
-            session.beginDialog('/more');
-        // } else {
-        //     next();
-        // }
-        
-        // builder.Prompts.text(session, 'I currently work at Microsoft as data insights consultant. Want to know more?', answer);
-        // session.send();
+        session.beginDialog('/more');
     },
     function (session, results) {
-
         if (results.response == 'yes') {
             session.send('I focus on advanced analytics - so topics like machine learning and deep learning. Sounds fancy, right?');
         } else {
@@ -60,37 +54,47 @@ intents.matches('GetJob',[
         }
     }
 ]);
-bot.dialog('/more', [
-    function (session) {
-        builder.Prompts.text(session, 'Want to know more?');
-    }//,
-    // function (session, results) {
-        // session.userData.answer = results.response;
-        // session.endDialog();
-    // }
-])
-
-intents.matches('GetLocation' [
+//Response to GetLocation
+intents.matches('GetLocation', [
     function (session) {
           session.send('I am based in Munich, Germany but my work takes me around Europe, and sometimes even beyond.');
+          session.beginDialog('/more');
+    },
+    function (session, results) {
+        if (results.response == 'yes') {
+            session.send('I moved here in January 2017 for my job at Microsoft.');
+        } else {
+            session.send('Okay. What else do you want to know?');
+        }
     }
 ]);
-    
-    
-    // , builder.DialogAction.send('I am in Munich, Germany. We have lots of beer and schnitzel.'));
-intents.matches('GetName', builder.DialogAction.send('I am surprised you found this website without knowing my name, but here you go : Martin Antoine Kayser.'));
+//Response to GetName
+intents.matches('GetName', [
+    function (session) {
+          session.send('I am surprised you found this website without knowing my name, but here you go : Martin Antoine Kayser.');
+    }
+]);
+//Response to GetOrigin
 intents.matches('GetOrigin', builder.DialogAction.send('I am from Luxembourg, Luxembourg.'));
-
+//Response to Exit
 intents.matches('Exit', [
     function(session) {
-        session.sendTyping()
         session.send('Okay, bye I guess.');
     }
 ]);
+
+//Additional Dialogue
+bot.dialog('/more', [
+    function (session) {
+        builder.Prompts.text(session, 'Want to know more?');
+    }
+])
+
+//Catch for unknowns
 intents.onDefault((session) => {
-    session.sendTyping()
-    session.send('I\'m sorry - I am only allowed to talk about myself. \'%s\'.', session.message.text);
+    session.send('I\'m sorry - I am only allowed to talk about myself. \'%s\'.');
 }); 
+
 
 if (useEmulator) {
     var restify = require('restify');
@@ -103,3 +107,9 @@ if (useEmulator) {
     module.exports = { default: connector.listen() }
 }
 
+/*
+TODO :
+- Prompt to send email
+- Store conversations
+- Prompt to submit questions  
+*/
